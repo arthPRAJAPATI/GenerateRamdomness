@@ -1,94 +1,161 @@
-import re
-
 from hstest import CheckResult, StageTest, dynamic_test, TestedProgram
 
 ASK_RANDOM_STRING = "Print a random string containing 0 or 1:"
-ASK_TEST_STRING = "Please enter a test string containing 0 or 1:"
 
 # Case test
 test_data_1 = [
     {
-        "start": {"expected": ASK_RANDOM_STRING, "feedback": "The program should ask for a random string!"},
+        "start": [
+            {
+                "expected": "Please provide AI some data to learn...",
+                "feedback": "'Please provide AI some data to learn...' not found in the output!"
+            },
+            {
+                "expected": "The current data length is 0, 100 symbols left",
+                "feedback": "'The current data length is 0, 100 symbols left' not found in the output!"
+            },
+            {
+                "expected": "Print a random string containing 0 or 1:",
+                "feedback": "'Print a random string containing 0 or 1:' not found in the output!"
+            },
+        ],
         "test_cases": [
             {
-                "case": "1010101101010",
-                "verify": [
-                    {
-                        "expected": "current data length",
-                        "feedback": "'current data length' is not found in the output!"},
-                    {"expected": "13", "feedback": "Value for 'data length' is wrong!"},
-                    {"expected": "87", "feedback": "Value for for 'symbol left' is wrong!"},
-                    {"expected": ASK_RANDOM_STRING, "feedback": f"The program should ask for a random string!"},
-                ]
-            },
-            {
-                "case": "1010101101010_some_wrong_symbols",
-                "verify": [
-                    {
-                        "expected": "current data length",
-                        "feedback": "'current data length' is not found in the output!"},
-                    {"expected": "26", "feedback": "Value for 'data length' is wrong!"},
-                    {"expected": "74", "feedback": "Value for for 'symbol left' is wrong!"},
-                    {"expected": ASK_RANDOM_STRING, "feedback": f"{ASK_RANDOM_STRING} is not found in output!"},
-                ]
-            },
-            {
-                "case": "1010100111001010010101001010100001010001",
+                "case": "010100100101010101000010001010101010100100100101001",
                 "verify": [
                     {
                         "expected": "current data length",
                         "feedback": "'current data length' is not found in the output!"
                     },
-                    {"expected": "66", "feedback": "Value for 'data length' is wrong!"},
-                    {"expected": "34", "feedback": "Value for for 'symbol left' is wrong!"},
-                    {"expected": ASK_RANDOM_STRING, "feedback": f"{ASK_RANDOM_STRING} is not found in output!"},
+                    {
+                        "expected": "length is 51",
+                        "feedback": "Value for 'data length' is wrong!"
+                    },
+                    {
+                        "expected": "49 symbols",
+                        "feedback": "Value for for 'symbol left' is wrong!"
+                    },
+                    {
+                        "expected": ASK_RANDOM_STRING,
+                        "feedback": f"The program should ask for a random string!"
+                    },
                 ]
             },
             {
-                "case": "01010000100101011010001001000101011101000101010010100101",
+                "case": "011010001011111100101010100011001010101010010001001010010011",
                 "verify": [
                     {
-                        "expected": "Final data string:",
-                        "feedback": "'Final data string:' is not found in the output!"
-                    },
-                    {
-                        "expected": "1010101101010101010011100101001010100101010000101000101010000100101011010001001000101011101000101010010100101",
+                        "expected": "010100100101010101000010001010101010100100100101001011010001011111100101010100011001010101010010001001010010011",
                         "feedback": "Final data string is wrong!"
                     },
                     {
-                        "expected": ASK_TEST_STRING,
-                        "feedback": f"{ASK_TEST_STRING} is not found in the output!"
+                        "expected": "You have $1000. Every time the system successfully predicts your next press, you lose $1.",
+                        "feedback": "Game information not found in the output!"
+                    },
+                    {
+                        "expected": 'Otherwise, you earn $1. Print "enough" to leave the game.',
+                        "feedback": "Game information not found in the output!"
+                    },
+                    {
+                        "expected": ASK_RANDOM_STRING,
+                        "feedback": f"The program should ask for a random string!"
                     },
                 ]
             },
             {
-                "case": "010",
+                "case": "011",
                 "verify": [
                     {
-                        "expected": ASK_TEST_STRING,
-                        "feedback": "When the test string length is less than 4, the program should ask again!"
+                        "expected": ASK_RANDOM_STRING,
+                        "feedback": "The program should ask for a random string if string length is less than '4'!"
                     },
                 ]
             },
             {
-                "case": "010000101010101010001101010011110101101101010110111011110011",
+                "case": "01110010010",
                 "verify": [
                     {
                         "expected": "predictions:",
-                        "feedback": "'predictions' is not found in the output!"
+                        "feedback": "'predictions:' is not found in the output!"
+                    },
+                    {
+                        "expected": "guessed 5",
+                        "feedback": "Value for 'guessed' is wrong!"
+                    },
+                    {
+                        "expected": "out of 8",
+                        "feedback": "Value for 'out of' is wrong!"
                     },
                     {
                         "expected": "Computer guessed",
-                        "feedback": "'Computer guessed' is not found in the output!"
+                        "feedback": "'Computer guessed' not found in the output!"
                     },
                     {
-                        "expected": "%",
-                        "feedback": "'%' is not found in the output!"
+                        "expected": "62.5",
+                        "feedback": "Accuracy value is wrong!"
+                    },
+                    {
+                        "expected": "Your balance is now",
+                        "feedback": "'Your balance is now' not found in the output!"
+                    },
+                    {
+                        "expected": "$998",
+                        "feedback": "Balance value is wrong!"
+                    },
+                    {
+                        "expected": ASK_RANDOM_STRING,
+                        "feedback": f"{ASK_RANDOM_STRING} is not found in output!"
+                    },
+                ]
+            },
+            {
+                "case": "0111001001001",
+                "verify": [
+                    {
+                        "expected": "predictions:",
+                        "feedback": "'predictions:' is not found in the output!"
+                    },
+                    {
+                        "expected": "guessed 6",
+                        "feedback": "Value for 'guessed' is wrong!"
+                    },
+                    {
+                        "expected": "out of 10",
+                        "feedback": "Value for 'out of' is wrong!"
+                    },
+                    {
+                        "expected": "Computer guessed",
+                        "feedback": "'Computer guessed' not found in the output!"
+                    },
+                    {
+                        "expected": "60.0",
+                        "feedback": "Accuracy value is wrong!"
+                    },
+                    {
+                        "expected": "Your balance is now",
+                        "feedback": "'Your balance is now' not found in the output!"
+                    },
+                    {
+                        "expected": "$996",
+                        "feedback": "Balance value is wrong!"
+                    },
+                    {
+                        "expected": ASK_RANDOM_STRING,
+                        "feedback": f"{ASK_RANDOM_STRING} is not found in output!"
+                    },
+                ]
+            },
+            {
+                "case": "enough",
+                "verify": [
+                    {
+                        "expected": "Game over!",
+                        "feedback": "'Game over!' is not found in the output!"
                     },
                 ]
             },
         ]
-    },
+    }
 ]
 
 
@@ -102,8 +169,9 @@ class GenRandTest(StageTest):
         """Tests case/expected"""
         t = TestedProgram()
         self.output = t.start()
-        if dict_["start"]["expected"].lower() not in self.output.lower():
-            return CheckResult.wrong(dict_["start"]["feedback"])
+        for item in dict_["start"]:
+            if item["expected"].lower() not in self.output.lower():
+                return CheckResult.wrong(item["feedback"])
 
         for test_case in dict_["test_cases"]:
             self.output = t.execute(test_case["case"])
@@ -118,23 +186,6 @@ class GenRandTest(StageTest):
         non scores messages
         """
         return self.case_test(dict_)
-
-    @dynamic_test()
-    def test2(self):
-        pattern = r'[0-9]+\.[0-9]+'
-        prob = re.findall(pattern, self.output)
-        if not prob:
-            return CheckResult.wrong("Accuracy value not found in the output!")
-        try:
-            prob = float(prob[0])
-        except IndexError:
-            return CheckResult.wrong("Accuracy value not found in the output!")
-        except ValueError:
-            return CheckResult.wrong("Could not convert accuracy value to float!")
-
-        if prob < 60:
-            return CheckResult.wrong("Accuracy value is too low!")
-        return CheckResult.correct()
 
 
 if __name__ == '__main__':

@@ -21,9 +21,24 @@ for _ in range(0, len(final_input) - 3):
         else:
             values_dict[substring][1] += 1
 
-for values in values_dict.keys():
-    list_values = values_dict[values]
-    print(f"{values}: {list_values[0]},{list_values[1]}")
+print("Please enter a test string containing 0 or 1:")
+test_input = input()
+while len(test_input) < 4:
+    print("Please enter a test string containing 0 or 1:")
+    test_input = input()
+totalCount = 0
+trueCount = 0
+predictions = ""
+test_numbers = ''.join([str(i) for i in [int(x) for x in test_input if x in ["0", "1"]]])
+for _ in range(0, len(test_numbers) - 3):
+    test_substring = test_numbers[_:_ + 3]
+    if test_substring in values_dict:
+        prediction = '0' if values_dict[test_substring][0] > values_dict[test_substring][1] else '1'
+        predictions += prediction
+        totalCount += 1
+        if test_numbers[_ + 3] == prediction:
+            trueCount += 1
 
-
-
+print(f"predictions:")
+print(predictions)
+print(f"Computer guessed {trueCount} out of {totalCount} symbols right ({(trueCount/totalCount)*100:.2f} %)")
